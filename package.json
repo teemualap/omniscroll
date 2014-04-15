@@ -1,0 +1,29 @@
+{
+  "name": "omniscroll",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/teemualap/omniscroll"
+  },
+  "keywords": [
+    "scroll",
+    "touch",
+    "keyboard",
+    "wheel",
+    "browserify"
+  ],
+  "author": "Teemu Alapoikela",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/teemualap/omniscroll/issues"
+  },
+  "homepage": "https://github.com/teemualap/omniscroll",
+  "dependencies": {
+    "objectility": "0.0.0"
+  }
+}
