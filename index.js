@@ -32,9 +32,9 @@ omniscroll.init = function(config) {
   objectility.extend(omniscroll.settings,config);
 
   //register default plugins
-  var omniscrollKeyboard = require('../omniscroll-keyboard/index.js')(omniscroll,omniscroll.settings);
-  var omniscrollWheel = require('../omniscroll-wheel/index.js')(omniscroll,omniscroll.settings);
-  var omniscrollTouch = require('../omniscroll-touch/index.js')(omniscroll,omniscroll.settings);
+  var omniscrollKeyboard = require('omniscroll-keyboard')(omniscroll,omniscroll.settings);
+  var omniscrollWheel = require('omniscroll-wheel')(omniscroll,omniscroll.settings);
+  var omniscrollTouch = require('omniscroll-touch')(omniscroll,omniscroll.settings);
 
   return omniscroll;
 };
