@@ -1,14 +1,14 @@
 {
   "name": "omniscroll",
-  "version": "0.0.1",
-  "description": "Consumes events. Provides delta values.",
+  "version": "0.1.0",
+  "description": "Provides unified delta values via plugins regardless of source.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com/teemualap/omniscroll"
+    "url": "git@github.com:teemualap/omniscroll.git"
   },
   "keywords": [
     "scroll",
@@ -24,6 +24,9 @@
   },
   "homepage": "https://github.com/teemualap/omniscroll",
   "dependencies": {
-    "objectility": "0.0.0"
+    "omniscroll-keyboard": "~0.0.1",
+    "omniscroll-wheel": "~0.0.1",
+    "omniscroll-touch": "~0.0.1",
+    "objectility": "~0.0.1"
   }
 }

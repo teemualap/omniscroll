@@ -1,111 +1,98 @@
-(function(factory){
-  if ( typeof define === 'function' && define.amd ) {
-    // AMD. Register as an anonymous module.
-    define([], factory());
-  } else if (typeof exports === 'object') {
-    // Node/CommonJS
-    module.exports = factory();
-  } else {
-    // Browser globals
-    window.omniscroll = factory();
+var objectility = require('objectility');
+
+//our to be exposed object literal
+var omniscroll = {};
+
+//default settings
+omniscroll.settings = {
+  keyboardFactor: 15,
+  wheelFactor: 5,
+  touchFactor: 2,
+  preventDefault: true
+};
+
+//store user defined plugins here
+omniscroll.plugins = {};
+
+//store user defined transforms here
+omniscroll.transforms = [];
+
+//registers a plugin
+omniscroll.plugin = function(name,fn) {
+  return omniscroll.plugins[name] = fn;
+};
+
+//initializes omniscroll
+omniscroll.init = function(config) {
+  
+  if (config && typeof config !== 'object') {
+    throw new Error("Provide and object for omniscroll configuration");
   }
-}
-(function(){
 
-  var objectility = require('objectility');
+  objectility.extend(omniscroll.settings,config);
 
-  //clamp delta values based on min/max values from settings
-  function clamp(value) {
-    return Math.min( Math.max(omniscroll.settings.clamp.min, value), omniscroll.settings.clamp.max );
-  }
-
-  //Return clamped event delta. Sets delta values to 0 if no delta present.
-  function getDeltaObj(event,plugin) {
-
-    return {
-      y: clamp(event.deltaY || 0),
-      x: clamp(event.deltaX || 0)
-    }
-
-  }
-
-  //our to be exposed object literal
-  var omniscroll = {};
-
-  //default settings
-  omniscroll.settings = {
-    clamp: {
-      min: -100,
-      max: 100
-    }
-  };
-
-  //store user defined plugins here
-  omniscroll.plugins = {};
-
-  //configure settings
-  omniscroll.configure = function(config){
-
-    if (typeof config !== 'object') {
-      throw new Error("Provide and object for omniscroll configuration");
-    }
-
-    objectility.extend(this.settings,config);
-
-  };
-
-  omniscroll.event = function(event,plugin){
-
-    if (!event) {
-      throw new Error("omniscroll.event can only consume events");
-    }
-
-    var delta = getDeltaObj(event);
-    
-
-    if (plugin) {
-
-      var transform;
-
-      //search for a registered plugin
-      if (typeof plugin === 'string') {
-        if (this.plugins[plugin]) {
-          transform = this.plugins[plugin];
-        }
-        else {
-          throw new Error('Could not found a registered plugin: ' + plugin);
-        }
-      }
-
-      //use a plain function
-      else if (typeof plugin === 'function') {
-        transform = plugin;
-      }
-      else {
-        throw new Error('Please register your plugin via omniscroll.plugin(name,fn) or use a plain function');
-      }
-
-      //make it so
-      transform(event,delta);
-
-    }
-
-    var omniEvent = {
-      originalEvent: event,
-      delta: delta,
-      type: 'omniscroll'
-    };
-
-    return omniEvent;
-  };
-
-  omniscroll.plugin = function(name,fn) {
-    return omniscroll.plugins[name] = fn;
-  };
-
-  //register a noop plugin
-  omniscroll.plugins['noop'] = function() {};
+  //register default plugins
+  var omniscrollKeyboard = require('../omniscroll-keyboard/index.js')(omniscroll,omniscroll.settings);
+  var omniscrollWheel = require('../omniscroll-wheel/index.js')(omniscroll,omniscroll.settings);
+  var omniscrollTouch = require('../omniscroll-touch/index.js')(omniscroll,omniscroll.settings);
 
   return omniscroll;
+};
 
-}));
+//consume delta values.
+//provide a transform function as a the second argument for further transforms.
+omniscroll.consume = function(delta,source){
+
+  if (delta === undefined || typeof delta !== 'number') {
+    throw new Error("omniscroll.consume wants an integer. hungry.");
+  }
+
+  //make the transforms happen
+  if (omniscroll.transforms.length) {
+    for (var i = 0; i < omniscroll.transforms.length; i++) {
+      delta = omniscroll.transforms[i](delta);
+    }
+  }
+
+  var output = {
+    delta: delta,
+    source: source
+  };
+
+  if (this.callback) {
+    this.callback(output);
+  }
+};
+
+omniscroll.transform = function(fn) {
+  if (!fn || typeof fn !== 'function') {
+    throw new Error("omniscroll.transform wants a function");
+  }
+  omniscroll.transforms.push(fn);
+  return omniscroll;
+};
+
+omniscroll.onDelta = function(fn) {
+  if (!fn || typeof fn !== 'function') {
+    throw new Error("omniscroll.delta wants a function");
+  }
+  omniscroll.callback = fn;
+};
+
+//bind plugins
+omniscroll.bind = function(element) {
+  for (var p in this.plugins) {
+    this.plugins[p].bind(element);
+  }
+  return omniscroll;
+};
+
+//unbind plugins
+omniscroll.unbind = function(element) {
+  for (var p in this.plugins) {
+    this.plugins[p].unbind(element);
+  }
+  return omniscroll;
+};
+
+module.exports = omniscroll;

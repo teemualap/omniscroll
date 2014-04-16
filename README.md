@@ -1,22 +1,34 @@
 Omniscroll
 ==========
 
-Consumes events. Provides delta values.
+Provides unified, configurable, transformable delta values via plugins regardless of source. Includes default support for wheel, keyboard and touch.
 
-		var wheel = require('uniwheel');
-		var omniscroll = require('../index.js');
-		var omniscrollKeyboard = require('omniscroll-keyboard')(omniscroll);
+On it's own, omniscroll doesn't actually do any scrolling. It's up to you to do anything you want with the values.
 
-		function wheelHandler(e) {
-		  var scrollValue = omniscroll.event(e);
-		  console.log(scrollValue);
+Usage:
+------
+
+		var omniscroll = require('omniscroll');
+
+		//an example and optional transform function
+		function inverter(value) {
+			return -value;
 		}
 
-		function keydownHandler(e) {
-		  var scrollValue = omniscroll.event(e,'omniscroll-keyboard');
-		  console.log(scrollValue);
-		}
+		omniscroll
+			.init({
+				//configure
+				keyboardFactor: 30,
+				wheelFactor: 15,
+				touchFactor: 5,
+				preventDefault: false
+			})
+			.bind(document)
+			.transform(inverter)
+			.onDelta(function(delta){
+				//do stuff with delta
+			});
 
-		document.addEventListener('keydown',keydownHandler);
-
-		wheel.on(window,wheelHandler);
+License
+-------
+MIT
