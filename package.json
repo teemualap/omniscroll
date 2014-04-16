@@ -1,6 +1,6 @@
 {
   "name": "omniscroll",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Provides unified delta values via plugins regardless of source.",
   "main": "index.js",
   "scripts": {

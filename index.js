@@ -5,9 +5,9 @@ var omniscroll = {};
 
 //default settings
 omniscroll.settings = {
-  keyboardFactor: 15,
-  wheelFactor: 5,
-  touchFactor: 2,
+  keyboardFactor: 1,
+  wheelFactor: 1,
+  touchFactor: 1,
   preventDefault: true
 };
 
